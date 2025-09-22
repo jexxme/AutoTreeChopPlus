@@ -1,8 +1,5 @@
 ﻿package org.atcplus.autotreechopplus;
 
-import com.jeff_media.updatechecker.UpdateCheckSource;
-import com.jeff_media.updatechecker.UpdateChecker;
-import com.jeff_media.updatechecker.UserAgentBuilder;
 import de.cubbossa.tinytranslations.*;
 import de.cubbossa.tinytranslations.libs.kyori.adventure.text.ComponentLike;
 import de.cubbossa.tinytranslations.storage.properties.PropertiesMessageStorage;
@@ -70,8 +67,6 @@ public class AutoTreeChopPlus extends JavaPlugin implements Listener, CommandExe
             .withDefault("<prefix>Auto tree chopping enabled by sneaking.</prefix>").build();
     public static final Message SNEAK_DISABLED_MESSAGE = new MessageBuilder("sneakDisabled")
             .withDefault("<prefix_negative>Auto tree chopping disabled by stopping sneak.</prefix_negative>").build();
-
-    private static final String SPIGOT_RESOURCE_ID = "113071";
     private static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
             "1.21.8", "1.21.7", "1.21.6", "1.21.5", "1.21.4", "1.21.3", "1.21.2", "1.21.1", "1.21",
             "1.20.6", "1.20.5", "1.20.4", "1.20.3", "1.20.2", "1.20.1", "1.20",
@@ -152,17 +147,6 @@ public class AutoTreeChopPlus extends JavaPlugin implements Listener, CommandExe
         } else {
             getLogger().warning("PlaceholderAPI not found. Placeholder expansion for AutoTreeChopPlus will not work.");
         }
-
-        new UpdateChecker(this, UpdateCheckSource.SPIGOT, SPIGOT_RESOURCE_ID)
-                .checkEveryXHours(24)
-                .setDonationLink("https://ko-fi.com/maoyue")
-                .setChangelogLink("https://modrinth.com/plugin/autotreechopplus/version/latest")
-                .setDownloadLink("https://modrinth.com/plugin/autotreechopplus/version/latest")
-                .setNotifyOpsOnJoin(true)
-                .setNotifyByPermissionOnJoin("atcplus.updatechecker")
-                .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
-                .checkNow();
-
         autoTreeChopPlusAPI = new AutoTreeChopPlusAPI(this);
         playerConfigs = new HashMap<>();
         initializeHooks(); // Initialize protection plugin hooks
@@ -365,11 +349,3 @@ public class AutoTreeChopPlus extends JavaPlugin implements Listener, CommandExe
         return config;
     }
 }
-
-
-
-
-
-
-
-

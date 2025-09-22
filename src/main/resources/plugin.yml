@@ -1,4 +1,4 @@
-﻿name: AutoTreeChopPlus
+name: AutoTreeChopPlus
 version: '${version}'
 main: org.atcplus.autotreechopplus.AutoTreeChopPlus
 api-version: 1.17
@@ -32,9 +32,6 @@ permissions:
     default: true
   atcplus.vip:
     description: VIP permission bypasses usage limits.
-    default: op
-  atcplus.updatechecker:
-    description: Sends update notifications to the player.
     default: op
   atcplus.other:
     description: Allows players to toggle AutoTreeChopPlus for others.
