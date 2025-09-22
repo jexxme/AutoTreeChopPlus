@@ -1,4 +1,4 @@
-﻿package org.atcplus.autotreechopplus;
+package org.atcplus.autotreechopplus;
 
 import de.cubbossa.tinytranslations.*;
 import de.cubbossa.tinytranslations.libs.kyori.adventure.text.ComponentLike;
