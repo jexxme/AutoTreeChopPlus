@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop;
+﻿package org.atcplus.autotreechopplus;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class Config {
 
-    private final AutoTreeChop plugin;
+    private final AutoTreeChopPlus plugin;
 
     // Configuration variables
     private boolean visualEffect;
@@ -64,7 +64,7 @@ public class Config {
     private Set<Material> leafTypes;
 
 
-    public Config(AutoTreeChop plugin) {
+    public Config(AutoTreeChopPlus plugin) {
         this.plugin = plugin;
         load();
     }
@@ -454,3 +454,8 @@ public class Config {
         return leafRemovalMode;
     }
 }
+
+
+
+
+

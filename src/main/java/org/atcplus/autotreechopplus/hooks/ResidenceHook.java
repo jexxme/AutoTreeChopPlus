@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.hooks;
+﻿package org.atcplus.autotreechopplus.hooks;
 
 import com.bekvon.bukkit.residence.api.ResidenceApi;
 import com.bekvon.bukkit.residence.containers.Flags;
@@ -22,10 +22,14 @@ public class ResidenceHook {
 
         if (residence.getOwnerUUID().equals(player.getUniqueId()) ||
                 player.isOp() ||
-                player.hasPermission("autotreechop.op")) {
+                player.hasPermission("atcplus.op")) {
             return true;
         }
 
         return residence.getPermissions().playerHas(player, Flags.valueOf(flagName.toLowerCase()), true);
     }
 } 
+
+
+
+

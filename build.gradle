@@ -6,8 +6,8 @@ plugins {
     id 'com.modrinth.minotaur' version '2.+'
 }
 
-group = 'org.milkteamc'
-version = '1.7.0'
+group = 'org.atcplus'
+version = '2.0.0-atcplus.0'
 
 repositories {
     mavenCentral()
@@ -89,13 +89,13 @@ tasks.build {
 
 
 tasks.shadowJar {
-    archiveFileName = "AutoTreeChop-${version}.jar"
+    archiveFileName = "AutoTreeChopPlus-${version}.jar"
     configurations = [project.configurations.runtimeClasspath]
     minimize()
 
-    relocate 'com.jeff_media.updatechecker', 'org.milkteamc.autotreechop.libs.updatechecker'
-    relocate 'de.cubbossa.tinytranslations', 'org.milkteamc.autotreechop.libs.tinytranslations'
-    relocate 'com.zaxxer.hikari', 'org.milkteamc.autotreechop.libs.hikari'
+    relocate 'com.jeff_media.updatechecker', 'org.atcplus.autotreechopplus.libs.updatechecker'
+    relocate 'de.cubbossa.tinytranslations', 'org.atcplus.autotreechopplus.libs.tinytranslations'
+    relocate 'com.zaxxer.hikari', 'org.atcplus.autotreechopplus.libs.hikari'
 
     // Add the license file to the JAR
     from("LICENSE") {
@@ -104,7 +104,7 @@ tasks.shadowJar {
 }
 
 tasks.jar {
-    archiveFileName = "AutoTreeChop-${version}-original.jar"
+    archiveFileName = "AutoTreeChopPlus-${version}-original.jar"
 }
 
 tasks.runServer {
@@ -122,15 +122,12 @@ try {
 
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
-    projectId = "autotreechop"
+    projectId = "autotreechopplus"
     versionType = "alpha"
 
     versionNumber = version
     versionName = "${version}-${gitHash}"
-    changelog = """
-🚨 **This is a SNAPSHOT version, ONLY use it in test server!**  
-Report any issues to our [GitHub](https://github.com/milkteamc/AutoTreeChop/issues)
-""".stripIndent().trim()
+    changelog = """Snapshot build of AutoTreeChopPlus. Test on staging servers only.\nReport any issues to our [GitHub](https://github.com/ATCPlus/AutoTreeChopPlus/issues)\n""".stripIndent().trim()
 
     uploadFile = tasks.shadowJar.archiveFile
 
@@ -145,3 +142,6 @@ Report any issues to our [GitHub](https://github.com/milkteamc/AutoTreeChop/issu
 }
 
 runPaper.folia.registerTask()
+
+
+

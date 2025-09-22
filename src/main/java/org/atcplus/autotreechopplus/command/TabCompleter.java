@@ -1,5 +1,5 @@
-// TabCompleter Class
-package org.milkteamc.autotreechop.command;
+﻿// TabCompleter Class
+package org.atcplus.autotreechopplus.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -14,7 +14,7 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (!cmd.getName().equalsIgnoreCase("autotreechop") && !cmd.getName().equalsIgnoreCase("atc")) {
+        if (!cmd.getName().equalsIgnoreCase("autotreechop") && !cmd.getName().equalsIgnoreCase("atc") && !cmd.getName().equalsIgnoreCase("autotreechopplus") && !cmd.getName().equalsIgnoreCase("atcplus")) {
             return null;
         }
         if (args.length != 1) {
@@ -23,8 +23,8 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
         List<String> completions = new ArrayList<>();
         completions.add("usage");
 
-        boolean hasOtherPermission = sender.hasPermission("autotreechop.other") || sender.hasPermission("autotreechop.op");
-        boolean hasOpPermission = sender.hasPermission("autotreechop.op");
+        boolean hasOtherPermission = sender.hasPermission("atcplus.other") || sender.hasPermission("atcplus.op");
+        boolean hasOpPermission = sender.hasPermission("atcplus.op");
 
         if (hasOtherPermission) {
             completions.add("enable-all");
@@ -39,3 +39,8 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
         return completions;
     }
 }
+
+
+
+
+

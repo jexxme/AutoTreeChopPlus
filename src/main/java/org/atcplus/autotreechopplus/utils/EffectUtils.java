@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.utils;
+﻿package org.atcplus.autotreechopplus.utils;
 
 import de.cubbossa.tinytranslations.Message;
 import org.bukkit.Color;
@@ -6,7 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import static org.milkteamc.autotreechop.AutoTreeChop.sendMessage;
+import static org.atcplus.autotreechopplus.AutoTreeChopPlus.sendMessage;
 
 public class EffectUtils {
 
@@ -43,3 +43,7 @@ public class EffectUtils {
                 10, 0.2, 0.1, 0.2, 0.1, block.getBlockData());
     }
 }
+
+
+
+

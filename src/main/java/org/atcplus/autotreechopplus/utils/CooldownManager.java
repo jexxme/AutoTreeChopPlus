@@ -1,8 +1,8 @@
-package org.milkteamc.autotreechop.utils;
+﻿package org.atcplus.autotreechopplus.utils;
 
 import org.bukkit.entity.Player;
-import org.milkteamc.autotreechop.AutoTreeChop;
-import org.milkteamc.autotreechop.Config;
+import org.atcplus.autotreechopplus.AutoTreeChopPlus;
+import org.atcplus.autotreechopplus.Config;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -10,15 +10,15 @@ import java.util.UUID;
 public class CooldownManager {
 
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
-    private final AutoTreeChop plugin;
+    private final AutoTreeChopPlus plugin;
 
-    public CooldownManager(AutoTreeChop plugin) {
+    public CooldownManager(AutoTreeChopPlus plugin) {
         this.plugin = plugin;
     }
 
 
     public void setCooldown(Player player, UUID playerUUID, Config config) {
-        if (player.hasPermission("autotreechop.vip")) {
+        if (player.hasPermission("atcplus.vip")) {
             cooldowns.put(playerUUID, System.currentTimeMillis() + (config.getVipCooldownTime() * 1000L));
         } else {
             cooldowns.put(playerUUID, System.currentTimeMillis() + (config.getCooldownTime() * 1000L));
@@ -42,3 +42,7 @@ public class CooldownManager {
         return Math.max(0, remainingTime / 1000);
     }
 }
+
+
+
+

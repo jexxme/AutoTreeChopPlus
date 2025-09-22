@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop;
+﻿package org.atcplus.autotreechopplus;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -6,17 +6,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class AutoTreeChopExpansion extends PlaceholderExpansion {
+public class AutoTreeChopPlusExpansion extends PlaceholderExpansion {
 
-    private final AutoTreeChop plugin;
+    private final AutoTreeChopPlus plugin;
 
-    public AutoTreeChopExpansion(AutoTreeChop plugin) {
+    public AutoTreeChopPlusExpansion(AutoTreeChopPlus plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public @NotNull String getIdentifier() {
-        return "autotreechop";
+        return "autotreechopplus";
     }
 
     @Override
@@ -42,9 +42,15 @@ public class AutoTreeChopExpansion extends PlaceholderExpansion {
         } else if (params.equalsIgnoreCase("daily_blocks_broken")) {
             return String.valueOf(plugin.getPlayerDailyBlocksBroken(playerUUID));
         } else if (params.equalsIgnoreCase("status")) {
-            return String.valueOf(plugin.getPlayerConfig(playerUUID).isAutoTreeChopEnabled());
+            return String.valueOf(plugin.getPlayerConfig(playerUUID).isAutoTreeChopPlusEnabled());
         }
 
         return null;
     }
 }
+
+
+
+
+
+

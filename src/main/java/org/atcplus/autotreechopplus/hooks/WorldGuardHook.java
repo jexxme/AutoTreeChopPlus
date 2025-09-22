@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.hooks;
+﻿package org.atcplus.autotreechopplus.hooks;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class WorldGuardHook {
     public boolean checkBuild(Player player, Location location) {
-        if (player.hasPermission("autotreechop.op") || player.isOp()) {
+        if (player.hasPermission("atcplus.op") || player.isOp()) {
             return true;
         }
 
@@ -27,3 +27,7 @@ public class WorldGuardHook {
                 !(set.queryState(localPlayer, Flags.BLOCK_BREAK) == StateFlag.State.DENY);
     }
 } 
+
+
+
+

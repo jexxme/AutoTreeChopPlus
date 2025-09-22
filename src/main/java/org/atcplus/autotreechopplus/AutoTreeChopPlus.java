@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop;
+﻿package org.atcplus.autotreechopplus;
 
 import com.jeff_media.updatechecker.UpdateCheckSource;
 import com.jeff_media.updatechecker.UpdateChecker;
@@ -22,22 +22,22 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.milkteamc.autotreechop.hooks.GriefPreventionHook;
-import org.milkteamc.autotreechop.hooks.LandsHook;
-import org.milkteamc.autotreechop.hooks.ResidenceHook;
-import org.milkteamc.autotreechop.hooks.WorldGuardHook;
-import org.milkteamc.autotreechop.utils.CooldownManager;
-import org.milkteamc.autotreechop.utils.EffectUtils;
-import org.milkteamc.autotreechop.utils.PermissionUtils;
-import org.milkteamc.autotreechop.utils.TreeChopUtils;
+import org.atcplus.autotreechopplus.hooks.GriefPreventionHook;
+import org.atcplus.autotreechopplus.hooks.LandsHook;
+import org.atcplus.autotreechopplus.hooks.ResidenceHook;
+import org.atcplus.autotreechopplus.hooks.WorldGuardHook;
+import org.atcplus.autotreechopplus.utils.CooldownManager;
+import org.atcplus.autotreechopplus.utils.EffectUtils;
+import org.atcplus.autotreechopplus.utils.PermissionUtils;
+import org.atcplus.autotreechopplus.utils.TreeChopUtils;
 
 import java.io.File;
 import java.util.*;
 
-public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecutor {
+public class AutoTreeChopPlus extends JavaPlugin implements Listener, CommandExecutor {
 
     public static final Message noResidencePermissions = new MessageBuilder("noResidencePermissions")
-            .withDefault("<prefix_negative>You don't have permission to use AutoTreeChop here.</prefix_negative>").build();
+            .withDefault("<prefix_negative>You don't have permission to use AutoTreeChopPlus here.</prefix_negative>").build();
     public static final Message ENABLED_MESSAGE = new MessageBuilder("enabled")
             .withDefault("<prefix>Auto tree chopping enabled.</prefix>").build();
     public static final Message DISABLED_MESSAGE = new MessageBuilder("disabled")
@@ -51,7 +51,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
     public static final Message HIT_MAX_BLOCK_MESSAGE = new MessageBuilder("hitmaxblock")
             .withDefault("<prefix_negative>You have reached your daily block breaking limit.</prefix_negative>").build();
     public static final Message USAGE_MESSAGE = new MessageBuilder("usage")
-            .withDefault("<prefix>You have used the AutoTreeChop {current_uses}/{max_uses} times today.</prefix>").build();
+            .withDefault("<prefix>You have used the AutoTreeChopPlus {current_uses}/{max_uses} times today.</prefix>").build();
     public static final Message BLOCKS_BROKEN_MESSAGE = new MessageBuilder("blocks-broken")
             .withDefault("<prefix>You have broken {current_blocks}/{max_blocks} blocks today.</prefix>").build();
     public static final Message ENABLED_BY_OTHER_MESSAGE = new MessageBuilder("enabledByOther")
@@ -82,7 +82,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
     private final Set<Location> checkedLocations = new HashSet<>();
     private final Set<Location> processingLocations = new HashSet<>();
     private Config config; // Instance of your Config class
-    private AutoTreeChopAPI autoTreeChopAPI;
+    private AutoTreeChopPlusAPI autoTreeChopPlusAPI;
     private Map<UUID, PlayerConfig> playerConfigs;
     private String bukkitVersion = this.getServer().getBukkitVersion();
     private Metrics metrics;
@@ -125,7 +125,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
             bukkitVersion = bukkitVersion.substring(0, bukkitVersion.length() - 14);
             if (!SUPPORTED_VERSIONS.contains(bukkitVersion)) {
                 getLogger().warning("Your Minecraft version didn't fully tested yet.");
-                getLogger().warning("IF you have any issues, feel free to report it at our GitHub: https://github.com/milkteamc/AutoTreeChop/issues");
+                getLogger().warning("IF you have any issues, feel free to report it at our GitHub: https://github.com/ATCPlus/AutoTreeChopPlus/issues");
             }
         }
 
@@ -133,37 +133,37 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
         getServer().getPluginManager().registerEvents(this, this);
 
         // Register command and tab completer
-        org.milkteamc.autotreechop.command.Command command = new org.milkteamc.autotreechop.command.Command(this);
+        org.atcplus.autotreechopplus.command.Command command = new org.atcplus.autotreechopplus.command.Command(this);
         Objects.requireNonNull(getCommand("autotreechop")).setExecutor(command);
         Objects.requireNonNull(getCommand("atc")).setExecutor(command);
-        Objects.requireNonNull(getCommand("autotreechop")).setTabCompleter(new org.milkteamc.autotreechop.command.TabCompleter());
-        Objects.requireNonNull(getCommand("atc")).setTabCompleter(new org.milkteamc.autotreechop.command.TabCompleter());
+        Objects.requireNonNull(getCommand("autotreechop")).setTabCompleter(new org.atcplus.autotreechopplus.command.TabCompleter());
+        Objects.requireNonNull(getCommand("atc")).setTabCompleter(new org.atcplus.autotreechopplus.command.TabCompleter());
 
         translations = BukkitTinyTranslations.application(this);
         translations.setMessageStorage(new PropertiesMessageStorage(new File(getDataFolder(), "/lang/")));
         translations.setStyleStorage(new PropertiesStyleStorage(new File(getDataFolder(), "/lang/styles.properties")));
-        translations.addMessages(TinyTranslations.messageFieldsFromClass(AutoTreeChop.class));
+        translations.addMessages(TinyTranslations.messageFieldsFromClass(AutoTreeChopPlus.class));
 
         loadLocale(); //Still needs to be called to *use* the locale.
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new AutoTreeChopExpansion(this).register();
-            getLogger().info("PlaceholderAPI expansion for AutoTreeChop has been registered.");
+            new AutoTreeChopPlusExpansion(this).register();
+            getLogger().info("PlaceholderAPI expansion for AutoTreeChopPlus has been registered.");
         } else {
-            getLogger().warning("PlaceholderAPI not found. Placeholder expansion for AutoTreeChop will not work.");
+            getLogger().warning("PlaceholderAPI not found. Placeholder expansion for AutoTreeChopPlus will not work.");
         }
 
         new UpdateChecker(this, UpdateCheckSource.SPIGOT, SPIGOT_RESOURCE_ID)
                 .checkEveryXHours(24)
                 .setDonationLink("https://ko-fi.com/maoyue")
-                .setChangelogLink("https://modrinth.com/plugin/autotreechop/version/latest")
-                .setDownloadLink("https://modrinth.com/plugin/autotreechop/version/latest")
+                .setChangelogLink("https://modrinth.com/plugin/autotreechopplus/version/latest")
+                .setDownloadLink("https://modrinth.com/plugin/autotreechopplus/version/latest")
                 .setNotifyOpsOnJoin(true)
-                .setNotifyByPermissionOnJoin("autotreechop.updatechecker")
+                .setNotifyByPermissionOnJoin("atcplus.updatechecker")
                 .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
                 .checkNow();
 
-        autoTreeChopAPI = new AutoTreeChopAPI(this);
+        autoTreeChopPlusAPI = new AutoTreeChopPlusAPI(this);
         playerConfigs = new HashMap<>();
         initializeHooks(); // Initialize protection plugin hooks
 
@@ -182,7 +182,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
                 residenceEnabled = true;
                 getLogger().info("Residence support enabled");
             } catch (Exception e) {
-                getLogger().warning("Residence can't be hook, please report this to our GitHub: https://github.com/milkteamc/AutoTreeChop/issues");
+                getLogger().warning("Residence can't be hook, please report this to our GitHub: https://github.com/ATCPlus/AutoTreeChopPlus/issues");
                 residenceEnabled = false;
             }
         } else {
@@ -195,7 +195,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
                 griefPreventionEnabled = true;
                 getLogger().info("GriefPrevention support enabled");
             } catch (Exception e) {
-                getLogger().warning("GriefPrevention can't be hook, please report this to our GitHub: https://github.com/milkteamc/AutoTreeChop/issues");
+                getLogger().warning("GriefPrevention can't be hook, please report this to our GitHub: https://github.com/ATCPlus/AutoTreeChopPlus/issues");
                 griefPreventionEnabled = false;
             }
         } else {
@@ -208,7 +208,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
                 landsEnabled = true;
                 getLogger().info("Lands support enabled");
             } catch (Exception e) {
-                getLogger().warning("Lands can't be hook, please report this to our GitHub: https://github.com/milkteamc/AutoTreeChop/issues");
+                getLogger().warning("Lands can't be hook, please report this to our GitHub: https://github.com/ATCPlus/AutoTreeChopPlus/issues");
                 landsEnabled = false;
             }
         } else {
@@ -220,7 +220,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
                 worldGuardHook = new WorldGuardHook();
                 getLogger().info("WorldGuard support enabled");
             } catch (NoClassDefFoundError e) {
-                getLogger().warning("WorldGuard can't be hook, please report this to our GitHub: https://github.com/milkteamc/AutoTreeChop/issues");
+                getLogger().warning("WorldGuard can't be hook, please report this to our GitHub: https://github.com/ATCPlus/AutoTreeChopPlus/issues");
                 worldGuardEnabled = false;
             }
         } else {
@@ -280,7 +280,7 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
         Location location = block.getLocation();
         BlockData blockData = block.getBlockData();
 
-        if (playerConfig.isAutoTreeChopEnabled() && TreeChopUtils.isLog(material, config)) {
+        if (playerConfig.isAutoTreeChopPlusEnabled() && TreeChopUtils.isLog(material, config)) {
             if (!PermissionUtils.hasVipBlock(player, playerConfig, config)) {
                 if (playerConfig.getDailyBlocksBroken() >= config.getMaxBlocksPerDay()) {
                     EffectUtils.sendMaxBlockLimitReachedMessage(player, block, HIT_MAX_BLOCK_MESSAGE);
@@ -321,19 +321,19 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
         UUID playerUUID = player.getUniqueId();
 
         // Check if player has permission to use the plugin
-        if (!player.hasPermission("autotreechop.use")) {
+        if (!player.hasPermission("atcplus.use")) {
             return;
         }
 
         PlayerConfig playerConfig = getPlayerConfig(playerUUID);
 
         if (event.isSneaking()) {
-            playerConfig.setAutoTreeChopEnabled(true);
+            playerConfig.setAutoTreeChopPlusEnabled(true);
             if (config.getSneakMessage()) {
                 sendMessage(player, SNEAK_ENABLED_MESSAGE);
             }
         } else {
-            playerConfig.setAutoTreeChopEnabled(false);
+            playerConfig.setAutoTreeChopPlusEnabled(false);
             if (config.getSneakMessage()) {
                 sendMessage(player, SNEAK_DISABLED_MESSAGE);
             }
@@ -357,11 +357,19 @@ public class AutoTreeChop extends JavaPlugin implements Listener, CommandExecuto
         return getPlayerConfig(playerUUID).getDailyBlocksBroken();
     }
 
-    public AutoTreeChopAPI getAutoTreeChopAPI() {
-        return autoTreeChopAPI;
+    public AutoTreeChopPlusAPI getAutoTreeChopPlusAPI() {
+        return autoTreeChopPlusAPI;
     }
 
     public Config getPluginConfig() {
         return config;
     }
 }
+
+
+
+
+
+
+
+

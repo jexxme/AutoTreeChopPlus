@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.utils;
+﻿package org.atcplus.autotreechopplus.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -6,13 +6,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.milkteamc.autotreechop.AutoTreeChop;
-import org.milkteamc.autotreechop.Config;
-import org.milkteamc.autotreechop.PlayerConfig;
-import org.milkteamc.autotreechop.hooks.GriefPreventionHook;
-import org.milkteamc.autotreechop.hooks.LandsHook;
-import org.milkteamc.autotreechop.hooks.ResidenceHook;
-import org.milkteamc.autotreechop.hooks.WorldGuardHook;
+import org.atcplus.autotreechopplus.AutoTreeChopPlus;
+import org.atcplus.autotreechopplus.Config;
+import org.atcplus.autotreechopplus.PlayerConfig;
+import org.atcplus.autotreechopplus.hooks.GriefPreventionHook;
+import org.atcplus.autotreechopplus.hooks.LandsHook;
+import org.atcplus.autotreechopplus.hooks.ResidenceHook;
+import org.atcplus.autotreechopplus.hooks.WorldGuardHook;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ public class LeafRemovalUtils {
     /**
      * Initiates leaf removal process after tree chopping
      */
-    public static void processLeafRemoval(Block originalLogBlock, Player player, AutoTreeChop plugin,
+    public static void processLeafRemoval(Block originalLogBlock, Player player, AutoTreeChopPlus plugin,
                                           Config config, PlayerConfig playerConfig,
                                           boolean worldGuardEnabled, boolean residenceEnabled,
                                           boolean griefPreventionEnabled, boolean landsEnabled,
@@ -38,7 +38,7 @@ public class LeafRemovalUtils {
         }
 
         // Check if player has permission
-        if (!player.hasPermission("autotreechop.leaves")) {
+        if (!player.hasPermission("atcplus.leaves")) {
             return;
         }
 
@@ -76,7 +76,7 @@ public class LeafRemovalUtils {
         };
 
         // Execute based on async configuration
-        if (config.isLeafRemovalAsync() && !AutoTreeChop.isFolia()) {
+        if (config.isLeafRemovalAsync() && !AutoTreeChopPlus.isFolia()) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
                     Bukkit.getScheduler().runTask(plugin, leafRemovalTask));
         } else {
@@ -97,7 +97,7 @@ public class LeafRemovalUtils {
         }
     }
 
-    private static void scheduleDelayedLeafRemoval(Block originalLogBlock, Player player, AutoTreeChop plugin,
+    private static void scheduleDelayedLeafRemoval(Block originalLogBlock, Player player, AutoTreeChopPlus plugin,
                                                    Config config, PlayerConfig playerConfig,
                                                    boolean worldGuardEnabled, boolean residenceEnabled,
                                                    boolean griefPreventionEnabled, boolean landsEnabled,
@@ -111,7 +111,7 @@ public class LeafRemovalUtils {
                 landsHook, residenceHook, griefPreventionHook, worldGuardHook,
                 checkedLeafLocations, processingLeafLocations, sessionId, playerKey);
 
-        if (AutoTreeChop.isFolia()) {
+        if (AutoTreeChopPlus.isFolia()) {
             plugin.getServer().getRegionScheduler().runDelayed(plugin, originalLogBlock.getLocation(),
                     (task) -> delayedTask.run(), Math.max(config.getLeafRemovalDelayTicks(), 60L));
         } else {
@@ -119,7 +119,7 @@ public class LeafRemovalUtils {
         }
     }
 
-    private static void startLeafRemoval(Block originalLogBlock, Player player, AutoTreeChop plugin,
+    private static void startLeafRemoval(Block originalLogBlock, Player player, AutoTreeChopPlus plugin,
                                          Config config, PlayerConfig playerConfig,
                                          boolean worldGuardEnabled, boolean residenceEnabled,
                                          boolean griefPreventionEnabled, boolean landsEnabled,
@@ -148,7 +148,7 @@ public class LeafRemovalUtils {
     }
 
     private static void processLeavesBatch(List<Block> leavesList, int startIndex, int batchSize,
-                                           Player player, AutoTreeChop plugin, Config config, PlayerConfig playerConfig,
+                                           Player player, AutoTreeChopPlus plugin, Config config, PlayerConfig playerConfig,
                                            boolean worldGuardEnabled, boolean residenceEnabled,
                                            boolean griefPreventionEnabled, boolean landsEnabled,
                                            LandsHook landsHook, ResidenceHook residenceHook,
@@ -183,7 +183,7 @@ public class LeafRemovalUtils {
                     landsEnabled, landsHook, residenceHook, griefPreventionHook, worldGuardHook,
                     processingLeafLocations, sessionId, playerKey);
 
-            if (AutoTreeChop.isFolia()) {
+            if (AutoTreeChopPlus.isFolia()) {
                 plugin.getServer().getRegionScheduler().runDelayed(plugin, leavesList.get(endIndex).getLocation(),
                         (task) -> nextBatchTask.run(), 1L);
             } else {
@@ -390,3 +390,7 @@ public class LeafRemovalUtils {
         return config.getLeafTypes().contains(material);
     }
 }
+
+
+
+

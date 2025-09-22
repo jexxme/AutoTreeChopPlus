@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.hooks;
+﻿package org.atcplus.autotreechopplus.hooks;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
@@ -21,7 +21,7 @@ public class GriefPreventionHook {
         }
 
         if (claim.getOwnerID().equals(player.getUniqueId()) ||
-                player.hasPermission("autotreechop.op") ||
+                player.hasPermission("atcplus.op") ||
                 player.isOp()) {
             return true;
         }
@@ -29,3 +29,7 @@ public class GriefPreventionHook {
         return claim.hasExplicitPermission(player, ClaimPermission.valueOf(flagName));
     }
 } 
+
+
+
+

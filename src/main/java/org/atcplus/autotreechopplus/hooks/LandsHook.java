@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.hooks;
+﻿package org.atcplus.autotreechopplus.hooks;
 
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.land.LandWorld;
@@ -25,10 +25,14 @@ public class LandsHook {
             return true; // Lands is not enabled in this world
         }
 
-        if (player.hasPermission("autotreechop.op") || player.isOp()) {
+        if (player.hasPermission("atcplus.op") || player.isOp()) {
             return true;
         }
 
         return world.hasRoleFlag(landPlayer, location, me.angeschossen.lands.api.flags.type.Flags.BLOCK_BREAK, null, false);
     }
 } 
+
+
+
+

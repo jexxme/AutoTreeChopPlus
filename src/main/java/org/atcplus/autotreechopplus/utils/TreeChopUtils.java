@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.utils;
+﻿package org.atcplus.autotreechopplus.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,24 +11,24 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
-import org.milkteamc.autotreechop.AutoTreeChop;
-import org.milkteamc.autotreechop.Config;
-import org.milkteamc.autotreechop.PlayerConfig;
-import org.milkteamc.autotreechop.hooks.GriefPreventionHook;
-import org.milkteamc.autotreechop.hooks.LandsHook;
-import org.milkteamc.autotreechop.hooks.ResidenceHook;
-import org.milkteamc.autotreechop.hooks.WorldGuardHook;
+import org.atcplus.autotreechopplus.AutoTreeChopPlus;
+import org.atcplus.autotreechopplus.Config;
+import org.atcplus.autotreechopplus.PlayerConfig;
+import org.atcplus.autotreechopplus.hooks.GriefPreventionHook;
+import org.atcplus.autotreechopplus.hooks.LandsHook;
+import org.atcplus.autotreechopplus.hooks.ResidenceHook;
+import org.atcplus.autotreechopplus.hooks.WorldGuardHook;
 
 import java.util.Random;
 import java.util.Set;
 
-import static org.milkteamc.autotreechop.AutoTreeChop.sendMessage;
+import static org.atcplus.autotreechopplus.AutoTreeChopPlus.sendMessage;
 
 public class TreeChopUtils {
 
     private static final Random random = new Random();
 
-    public static void chopTree(Block block, Player player, boolean ConnectedBlocks, ItemStack tool, Location location, Material material, BlockData blockData, AutoTreeChop plugin, Set<Location> processingLocations, Set<Location> checkedLocations, Config config, PlayerConfig playerConfig, boolean worldGuardEnabled, boolean residenceEnabled, boolean griefPreventionEnabled, boolean landsEnabled, LandsHook landsHook, ResidenceHook residenceHook, GriefPreventionHook griefPreventionHook, WorldGuardHook worldGuardHook) {
+    public static void chopTree(Block block, Player player, boolean ConnectedBlocks, ItemStack tool, Location location, Material material, BlockData blockData, AutoTreeChopPlus plugin, Set<Location> processingLocations, Set<Location> checkedLocations, Config config, PlayerConfig playerConfig, boolean worldGuardEnabled, boolean residenceEnabled, boolean griefPreventionEnabled, boolean landsEnabled, LandsHook landsHook, ResidenceHook residenceHook, GriefPreventionHook griefPreventionHook, WorldGuardHook worldGuardHook) {
         // Permission checks
         if (!resCheck(player, location, residenceEnabled, residenceHook) || !landsCheck(player, location, landsEnabled, landsHook) ||
                 !gfCheck(player, location, griefPreventionEnabled, griefPreventionHook) || !wgCheck(player, location, worldGuardEnabled, worldGuardHook)) {
@@ -116,16 +116,16 @@ public class TreeChopUtils {
 
                             // Check limits before processing next block
                             if (!PermissionUtils.hasVipUses(player, playerConfig, config) && playerConfig.getDailyUses() >= config.getMaxUsesPerDay()) {
-                                sendMessage(player, AutoTreeChop.HIT_MAX_USAGE_MESSAGE);
+                                sendMessage(player, AutoTreeChopPlus.HIT_MAX_USAGE_MESSAGE);
                                 return;
                             }
                             if (!PermissionUtils.hasVipBlock(player, playerConfig, config) && playerConfig.getDailyBlocksBroken() >= config.getMaxBlocksPerDay()) {
-                                sendMessage(player, AutoTreeChop.HIT_MAX_BLOCK_MESSAGE);
+                                sendMessage(player, AutoTreeChopPlus.HIT_MAX_BLOCK_MESSAGE);
                                 return;
                             }
 
                             // Schedule next block processing
-                            if (AutoTreeChop.isFolia()) {
+                            if (AutoTreeChopPlus.isFolia()) {
                                 plugin.getServer().getRegionScheduler().run(plugin, relativeBlock.getLocation(),
                                         (task2) -> chopTree(relativeBlock, player, ConnectedBlocks, tool, location, material, blockData, plugin, processingLocations, checkedLocations, config, playerConfig, worldGuardEnabled, residenceEnabled, griefPreventionEnabled, landsEnabled, landsHook, residenceHook, griefPreventionHook, worldGuardHook));
                             } else {
@@ -146,7 +146,7 @@ public class TreeChopUtils {
             };
 
             // Execute the task based on configuration and environment
-            if (!AutoTreeChop.isFolia() && config.isChopTreeAsync()) {
+            if (!AutoTreeChopPlus.isFolia() && config.isChopTreeAsync()) {
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
             } else {
                 task.run();
@@ -295,3 +295,7 @@ public class TreeChopUtils {
         return false;
     }
 }
+
+
+
+

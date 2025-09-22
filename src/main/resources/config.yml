@@ -1,8 +1,8 @@
-# AutoTreeChop by Maoyue
+﻿# AutoTreeChopPlus by the ATCPlus team (fork of AutoTreeChop by Maoyue)
 # Discord support server: https://discord.gg/uQ4UXANnP2
-# Modrinth Page: https://modrinth.com/plugin/autotreechop
-# Source code: https://github.com/milkteamc/AutoTreeChop
-# See original config file at: https://github.com/milkteamc/AutoTreeChop/blob/master/src/main/resources/config.yml
+# Modrinth Page: https://modrinth.com/plugin/autotreechopplus
+# Source code: https://github.com/ATCPlus/AutoTreeChopPlus
+# See original config file at: https://github.com/ATCPlus/AutoTreeChopPlus/blob/master/src/main/resources/config.yml
 
 # The plugin locale (<language>-<country>-<variant>)
 # en, de, zh, es, fr, ja, zh-TW, en-US, de-DE, de-AU, ...
@@ -15,10 +15,10 @@ use-player-locale: true
 
 # Tree Chopping setting
 # The number of times non-VIP players can chop down trees per day,
-# you can give everyone "autotreechop.vip" permission to disable it.
+# you can give everyone "atcplus.vip" permission to disable it.
 max-uses-per-day: 50
 # Tree blocks that non-VIP players can chop down every day,
-# you can give everyone "autotreechop.vip" permission to disable it.
+# you can give everyone "atcplus.vip" permission to disable it.
 max-blocks-per-day: 500
 # Cooldown time (second), use 0 to disable
 cooldownTime: 5
@@ -50,25 +50,25 @@ toolDamage: true
 toolDamageDecrease: 1
 # Enable this for better performance, but this may cause some issues on non-Paper servers.
 chopTreeAsync: true
-# Enable this if you want players must hold tools to use AutoTreeChop
+# Enable this if you want players must hold tools to use AutoTreeChopPlus
 mustUseTool: false
-# Set the default AutoTreeChop state for new players.
+# Set the default AutoTreeChopPlus state for new players.
 defaultTreeChop: false
 # Should plugin check for unbreaking enchantment?
 respectUnbreaking: true
 # Play a block break sound when ATC breaking every block
 playBreakSound: true
-# This controls whether players can toggle AutoTreeChop by running "/atc" command
+# This controls whether players can toggle AutoTreeChopPlus by running "/atc" command
 enable-command-toggle: true
-# This controls whether players can toggle AutoTreeChop by sneaking (pressing shift)
+# This controls whether players can toggle AutoTreeChopPlus by sneaking (pressing shift)
 enable-sneak-toggle: false
 # Should plugin show a message when player is sneaking?
 sneak-message: false
 
 # Protection plugins setting
-# If you are using Residence, you can set which Flag players have access to AutoTreeChop in residence.
+# If you are using Residence, you can set which Flag players have access to AutoTreeChopPlus in residence.
 residenceFlag: build
-# If you are using GriefPrevention, you can set which Flag players have access to AutoTreeChop in GriefPrevention.
+# If you are using GriefPrevention, you can set which Flag players have access to AutoTreeChopPlus in GriefPrevention.
 griefPreventionFlag: Build
 # Stop chopping if the blocks are not connected (not part of the same tree)
 stopChoppingIfNotConnected: false
@@ -149,3 +149,4 @@ valid-soil-types:
   - PODZOL
   - COARSE_DIRT
   - ROOTED_DIRT
+

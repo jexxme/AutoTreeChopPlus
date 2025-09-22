@@ -1,4 +1,4 @@
-name: "🐛 Bug Report"
+﻿name: "ðŸ› Bug Report"
 description: Create a new ticket for a bug.
 title: "[BUG] - <title>"
 labels: [
@@ -30,7 +30,7 @@ body:
     id: config
     attributes:
       label: "Your Config"
-      description: Please copy and paste your `plugins/AutoTreeChop/config.yml` file
+      description: Please copy and paste your `plugins/AutoTreeChopPlus/config.yml` file
       render: bash
     validations:
       required: true
@@ -60,9 +60,9 @@ body:
       label: "Server Plugins"
       description: Please paste the output of `plugins` command in your server console.
       placeholder: |
-        [19:01:39 INFO]: ℹ Server Plugins (3):
+        [19:01:39 INFO]: â„¹ Server Plugins (3):
         [19:01:39 INFO]: Bukkit Plugins:
-        [19:01:39 INFO]:  - AutoTreeChop, CatchBall, ViaVersion
+        [19:01:39 INFO]:  - AutoTreeChopPlus, CatchBall, ViaVersion
       render: bash
     validations:
       required: true
@@ -78,3 +78,4 @@ body:
       render: bash
     validations:
       required: false
+

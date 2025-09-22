@@ -1,4 +1,4 @@
-package org.milkteamc.autotreechop.utils;
+﻿package org.atcplus.autotreechopplus.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,12 +8,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.milkteamc.autotreechop.AutoTreeChop;
-import org.milkteamc.autotreechop.Config;
-import org.milkteamc.autotreechop.hooks.GriefPreventionHook;
-import org.milkteamc.autotreechop.hooks.LandsHook;
-import org.milkteamc.autotreechop.hooks.ResidenceHook;
-import org.milkteamc.autotreechop.hooks.WorldGuardHook;
+import org.atcplus.autotreechopplus.AutoTreeChopPlus;
+import org.atcplus.autotreechopplus.Config;
+import org.atcplus.autotreechopplus.hooks.GriefPreventionHook;
+import org.atcplus.autotreechopplus.hooks.LandsHook;
+import org.atcplus.autotreechopplus.hooks.ResidenceHook;
+import org.atcplus.autotreechopplus.hooks.WorldGuardHook;
 
 public class TreeReplantUtils {
 
@@ -21,7 +21,7 @@ public class TreeReplantUtils {
      * Schedules a sapling replant at the given location after a delay
      * Called from TreeChopUtils after a log block is broken
      */
-    public static void scheduleReplant(Player player, Block brokenLogBlock, Material originalLogType, AutoTreeChop plugin, Config config,
+    public static void scheduleReplant(Player player, Block brokenLogBlock, Material originalLogType, AutoTreeChopPlus plugin, Config config,
                                        boolean worldGuardEnabled, boolean residenceEnabled,
                                        boolean griefPreventionEnabled, boolean landsEnabled,
                                        LandsHook landsHook, ResidenceHook residenceHook,
@@ -71,7 +71,7 @@ public class TreeReplantUtils {
         // Schedule the task based on configuration and server type
         long delayTicks = config.getReplantDelayTicks();
 
-        if (AutoTreeChop.isFolia()) {
+        if (AutoTreeChopPlus.isFolia()) {
             plugin.getServer().getRegionScheduler().runDelayed(plugin, plantLocation,
                     (task) -> replantTask.run(), delayTicks);
         } else {
@@ -189,6 +189,10 @@ public class TreeReplantUtils {
     public static boolean isReplantEnabledForPlayer(Player player, Config config) {
         // Basic permission check - can be extended with per-player settings
         return config.isAutoReplantEnabled() &&
-                player.hasPermission("autotreechop.replant");
+                player.hasPermission("atcplus.replant");
     }
 }
+
+
+
+
