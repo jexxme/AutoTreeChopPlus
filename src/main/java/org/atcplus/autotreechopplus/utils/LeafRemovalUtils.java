@@ -1,9 +1,10 @@
-﻿package org.atcplus.autotreechopplus.utils;
+package org.atcplus.autotreechopplus.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.atcplus.autotreechopplus.AutoTreeChopPlus;
@@ -25,7 +26,7 @@ public class LeafRemovalUtils {
     /**
      * Initiates leaf removal process after tree chopping
      */
-    public static void processLeafRemoval(Block originalLogBlock, Player player, AutoTreeChopPlus plugin,
+    public static void processLeafRemoval(Block originalLogBlock, Material originalLogType, Player player, AutoTreeChopPlus plugin,
                                           Config config, PlayerConfig playerConfig,
                                           boolean worldGuardEnabled, boolean residenceEnabled,
                                           boolean griefPreventionEnabled, boolean landsEnabled,
@@ -53,6 +54,10 @@ public class LeafRemovalUtils {
         removedLogsPerSession.put(sessionId, new HashSet<>());
         activeLeafRemovalSessions.add(playerKey);
 
+        final boolean netherFungusContext = config.isNetherFungiEnabled() && (
+                isNetherFungusLog(originalLogType)
+                        || originalLogBlock.getWorld().getEnvironment() == World.Environment.NETHER);
+
         Runnable leafRemovalTask = () -> {
             Set<Location> checkedLeafLocations = new HashSet<>();
             Set<Location> processingLeafLocations = new HashSet<>();
@@ -62,13 +67,13 @@ public class LeafRemovalUtils {
 
             if (delayTicks > 0) {
                 // Always use delayed removal to avoid conflicts with tree chopping
-                scheduleDelayedLeafRemoval(originalLogBlock, player, plugin, config, playerConfig,
+                scheduleDelayedLeafRemoval(originalLogBlock, netherFungusContext, player, plugin, config, playerConfig,
                         worldGuardEnabled, residenceEnabled, griefPreventionEnabled, landsEnabled,
                         landsHook, residenceHook, griefPreventionHook, worldGuardHook,
                         checkedLeafLocations, processingLeafLocations, sessionId, playerKey);
             } else {
                 // Immediate removal (not recommended but kept for compatibility)
-                startLeafRemoval(originalLogBlock, player, plugin, config, playerConfig,
+                startLeafRemoval(originalLogBlock, netherFungusContext, player, plugin, config, playerConfig,
                         worldGuardEnabled, residenceEnabled, griefPreventionEnabled, landsEnabled,
                         landsHook, residenceHook, griefPreventionHook, worldGuardHook,
                         checkedLeafLocations, processingLeafLocations, sessionId, playerKey);
@@ -97,7 +102,7 @@ public class LeafRemovalUtils {
         }
     }
 
-    private static void scheduleDelayedLeafRemoval(Block originalLogBlock, Player player, AutoTreeChopPlus plugin,
+    private static void scheduleDelayedLeafRemoval(Block originalLogBlock, boolean netherFungus, Player player, AutoTreeChopPlus plugin,
                                                    Config config, PlayerConfig playerConfig,
                                                    boolean worldGuardEnabled, boolean residenceEnabled,
                                                    boolean griefPreventionEnabled, boolean landsEnabled,
@@ -106,7 +111,7 @@ public class LeafRemovalUtils {
                                                    Set<Location> checkedLeafLocations, Set<Location> processingLeafLocations,
                                                    String sessionId, String playerKey) {
 
-        Runnable delayedTask = () -> startLeafRemoval(originalLogBlock, player, plugin, config, playerConfig,
+        Runnable delayedTask = () -> startLeafRemoval(originalLogBlock, netherFungus, player, plugin, config, playerConfig,
                 worldGuardEnabled, residenceEnabled, griefPreventionEnabled, landsEnabled,
                 landsHook, residenceHook, griefPreventionHook, worldGuardHook,
                 checkedLeafLocations, processingLeafLocations, sessionId, playerKey);
@@ -119,7 +124,7 @@ public class LeafRemovalUtils {
         }
     }
 
-    private static void startLeafRemoval(Block originalLogBlock, Player player, AutoTreeChopPlus plugin,
+    private static void startLeafRemoval(Block originalLogBlock, boolean netherFungus, Player player, AutoTreeChopPlus plugin,
                                          Config config, PlayerConfig playerConfig,
                                          boolean worldGuardEnabled, boolean residenceEnabled,
                                          boolean griefPreventionEnabled, boolean landsEnabled,
@@ -130,7 +135,7 @@ public class LeafRemovalUtils {
 
         // Find all leaves within radius
         Collection<Block> leavesToRemove = findLeavesToRemove(originalLogBlock, config.getLeafRemovalRadius(),
-                checkedLeafLocations, config, sessionId);
+                checkedLeafLocations, config, sessionId, netherFungus);
 
         if (leavesToRemove.isEmpty()) {
             // Clean up session
@@ -255,10 +260,12 @@ public class LeafRemovalUtils {
     }
 
     private static Collection<Block> findLeavesToRemove(Block centerBlock, int radius,
-                                                        Set<Location> checkedLocations, Config config, String sessionId) {
+                                                        Set<Location> checkedLocations, Config config, String sessionId, boolean netherFungus) {
         Set<Block> leavesToRemove = new HashSet<>();
         Set<Location> visitedInThisSearch = new HashSet<>();
         Location center = centerBlock.getLocation();
+
+        int scanRadius = radius;
 
         // Get removed logs for this session
         Set<Location> removedLogs = removedLogsPerSession.get(sessionId);
@@ -267,9 +274,9 @@ public class LeafRemovalUtils {
         }
 
         // Find all leaf blocks within radius
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
+        for (int x = -scanRadius; x <= scanRadius; x++) {
+            for (int y = -scanRadius; y <= scanRadius; y++) {
+                for (int z = -scanRadius; z <= scanRadius; z++) {
                     Location checkLoc = center.clone().add(x, y, z);
                     Block checkBlock = checkLoc.getBlock();
 
@@ -278,7 +285,7 @@ public class LeafRemovalUtils {
                             !visitedInThisSearch.contains(checkLoc)) {
 
                         // Use improved orphaned detection
-                        if (isOrphanedLeaf(checkBlock, config, removedLogs)) {
+                        if (isOrphanedLeaf(checkBlock, config, removedLogs, netherFungus)) {
                             leavesToRemove.add(checkBlock);
                         }
                         visitedInThisSearch.add(checkLoc);
@@ -291,7 +298,11 @@ public class LeafRemovalUtils {
         return leavesToRemove;
     }
 
-    private static boolean isOrphanedLeaf(Block leafBlock, Config config, Set<Location> removedLogs) {
+    private static boolean isOrphanedLeaf(Block leafBlock, Config config, Set<Location> removedLogs, boolean netherFungus) {
+        if (netherFungus && isNetherFungusLeaf(leafBlock.getType())) {
+            return isConnectedToRemovedLog(leafBlock, removedLogs, new HashSet<>(), 0);
+        }
+
         String mode = config.getLeafRemovalMode().toLowerCase();
 
         switch (mode) {
@@ -386,10 +397,83 @@ public class LeafRemovalUtils {
         return false; // No connection to active logs found
     }
 
+    private static boolean isConnectedToRemovedLog(Block startBlock, Set<Location> removedLogs, Set<Location> visited, int depth) {
+        if (removedLogs == null || removedLogs.isEmpty()) {
+            return true;
+        }
+        if (depth > 12 || visited.size() > 200) {
+            return false;
+        }
+
+        Location startLoc = startBlock.getLocation();
+        if (!visited.add(startLoc)) {
+            return false;
+        }
+        if (removedLogs.contains(startLoc)) {
+            return true;
+        }
+
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
+                    if (x == 0 && y == 0 && z == 0) {
+                        continue;
+                    }
+
+                    Location checkLoc = startLoc.clone().add(x, y, z);
+                    if (removedLogs.contains(checkLoc)) {
+                        return true;
+                    }
+
+                    Block neighbourBlock = checkLoc.getBlock();
+                    Material neighbourType = neighbourBlock.getType();
+                    if (isNetherFungusLeaf(neighbourType) || NETHER_FUNGUS_LOGS.contains(neighbourType)) {
+                        if (isConnectedToRemovedLog(neighbourBlock, removedLogs, visited, depth + 1)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     public static boolean isLeafBlock(Material material, Config config) {
         return config.getLeafTypes().contains(material);
     }
+
+    private static boolean isNetherFungusLeaf(Material material) {
+        return NETHER_FUNGUS_LEAVES.contains(material);
+    }
+
+    private static boolean isNetherFungusLog(Material material) {
+        return material != null && NETHER_FUNGUS_LOGS.contains(material);
+    }
+
+    private static final EnumSet<Material> NETHER_FUNGUS_LEAVES = EnumSet.of(
+            Material.NETHER_WART_BLOCK,
+            Material.WARPED_WART_BLOCK,
+            Material.SHROOMLIGHT
+    );
+
+    private static final EnumSet<Material> NETHER_FUNGUS_LOGS = EnumSet.of(
+            Material.CRIMSON_STEM,
+            Material.STRIPPED_CRIMSON_STEM,
+            Material.CRIMSON_HYPHAE,
+            Material.STRIPPED_CRIMSON_HYPHAE,
+            Material.WARPED_STEM,
+            Material.STRIPPED_WARPED_STEM,
+            Material.WARPED_HYPHAE,
+            Material.STRIPPED_WARPED_HYPHAE
+    );
 }
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-﻿package org.atcplus.autotreechopplus.utils;
+package org.atcplus.autotreechopplus.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -66,7 +66,7 @@ public class TreeChopUtils {
 
             LeafRemovalUtils.trackRemovedLog(block.getLocation(), player.getUniqueId().toString());
 
-            LeafRemovalUtils.processLeafRemoval(block, player, plugin, config, playerConfig,
+            LeafRemovalUtils.processLeafRemoval(block, originalLogType, player, plugin, config, playerConfig,
                     worldGuardEnabled, residenceEnabled, griefPreventionEnabled, landsEnabled,
                     landsHook, residenceHook, griefPreventionHook, worldGuardHook);
 

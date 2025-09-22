@@ -1,4 +1,4 @@
-﻿package org.atcplus.autotreechopplus;
+package org.atcplus.autotreechopplus;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,6 +40,7 @@ public class Config {
     private int toolDamageDecrease;
     private boolean mustUseTool;
     private boolean defaultTreeChop;
+    private boolean globalAlwaysOn;
     private boolean respectUnbreaking;
     private boolean playBreakSound;
     private Set<Material> logTypes;
@@ -60,6 +61,7 @@ public class Config {
     private boolean leafRemovalAsync;
     private int leafRemovalBatchSize;
     private boolean leafRemovalCountsTowardsLimit;
+    private boolean netherFungiEnabled;
     private String leafRemovalMode;
     private Set<Material> leafTypes;
 
@@ -126,6 +128,7 @@ public class Config {
         toolDamageDecrease = config.getInt("toolDamageDecrease");
         mustUseTool = config.getBoolean("mustUseTool");
         defaultTreeChop = config.getBoolean("defaultTreeChop");
+        globalAlwaysOn = config.getBoolean("always-on-by-default", false);
         respectUnbreaking = config.getBoolean("respectUnbreaking");
         playBreakSound = config.getBoolean("playBreakSound");
         sneakToggle = config.getBoolean("enable-sneak-toggle");
@@ -135,6 +138,7 @@ public class Config {
         replantDelayTicks = config.getLong("replant-delay-ticks");
         requireSaplingInInventory = config.getBoolean("require-sapling-in-inventory");
         replantVisualEffect = config.getBoolean("replant-visual-effect");
+        netherFungiEnabled = config.getBoolean("enable-nether-fungi", true);
         leafRemovalEnabled = config.getBoolean("enable-leaf-removal");
         leafRemovalDelayTicks = config.getLong("leaf-removal-delay-ticks");
         leafRemovalRadius = config.getInt("leaf-removal-radius");
@@ -151,6 +155,8 @@ public class Config {
                 .filter(Objects::nonNull)  // Filter out null materials (invalid names)
                 .collect(Collectors.toSet());
 
+
+
         List<String> soilTypeStrings = config.getStringList("valid-soil-types");
 
         validSoilTypes = soilTypeStrings.stream()
@@ -158,15 +164,21 @@ public class Config {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
+
+
         logSaplingMapping = new HashMap<>();
         ConfigurationSection mappingSection = config.getConfigurationSection("log-sapling-mapping");
         if (mappingSection != null) {
             for (String logTypeStr : mappingSection.getKeys(false)) {
                 Material logType = Material.getMaterial(logTypeStr);
                 Material saplingType = Material.getMaterial(mappingSection.getString(logTypeStr));
-                if (logType != null && saplingType != null) {
-                    logSaplingMapping.put(logType, saplingType);
+                if (logType == null || saplingType == null) {
+                    continue;
                 }
+                if (!netherFungiEnabled && NETHER_FUNGI_LOGS.contains(logType)) {
+                    continue;
+                }
+                logSaplingMapping.put(logType, saplingType);
             }
         }
 
@@ -176,6 +188,8 @@ public class Config {
                 .map(Material::getMaterial)
                 .filter(Objects::nonNull)  // Filter out null materials (invalid names)
                 .collect(Collectors.toSet());
+
+
 
         // Locale handling
         Object localeObj = config.get("locale");
@@ -217,18 +231,26 @@ public class Config {
         defaultConfig.set("toolDamageDecrease", 1);
         defaultConfig.set("mustUseTool", false);
         defaultConfig.set("defaultTreeChop", false);
+        defaultConfig.set("always-on-by-default", false);
         defaultConfig.set("respectUnbreaking", true);
         defaultConfig.set("playBreakSound", true);
         defaultConfig.set("enable-sneak-toggle", false);
         defaultConfig.set("enable-command-toggle", true);
         defaultConfig.set("sneak-message", false);
-        defaultConfig.set("log-types", Arrays.asList("OAK_LOG", "SPRUCE_LOG", "BIRCH_LOG", "JUNGLE_LOG", "ACACIA_LOG", "DARK_OAK_LOG", "MANGROVE_LOG", "CHERRY_LOG"));
+        defaultConfig.set("enable-nether-fungi", true);
+        defaultConfig.set("log-types", Arrays.asList(
+                "OAK_LOG", "SPRUCE_LOG", "BIRCH_LOG", "JUNGLE_LOG",
+                "ACACIA_LOG", "DARK_OAK_LOG", "MANGROVE_LOG", "CHERRY_LOG", "PALE_OAK_LOG",
+                "CRIMSON_STEM", "STRIPPED_CRIMSON_STEM", "CRIMSON_HYPHAE", "STRIPPED_CRIMSON_HYPHAE",
+                "WARPED_STEM", "STRIPPED_WARPED_STEM", "WARPED_HYPHAE", "STRIPPED_WARPED_HYPHAE"
+        ));
         defaultConfig.set("enable-auto-replant", true);
         defaultConfig.set("replant-delay-ticks", 20L);
         defaultConfig.set("require-sapling-in-inventory", false);
         defaultConfig.set("replant-visual-effect", true);
         defaultConfig.set("valid-soil-types", Arrays.asList(
-                "DIRT", "GRASS_BLOCK", "PODZOL", "COARSE_DIRT", "ROOTED_DIRT"
+                "DIRT", "GRASS_BLOCK", "PODZOL", "COARSE_DIRT", "ROOTED_DIRT",
+                "CRIMSON_NYLIUM", "WARPED_NYLIUM", "NETHERRACK"
         ));
         ConfigurationSection logSaplingSection = defaultConfig.createSection("log-sapling-mapping");
         logSaplingSection.set("OAK_LOG", "OAK_SAPLING");
@@ -240,6 +262,14 @@ public class Config {
         logSaplingSection.set("MANGROVE_LOG", "MANGROVE_PROPAGULE");
         logSaplingSection.set("CHERRY_LOG", "CHERRY_SAPLING");
         logSaplingSection.set("PALE_OAK_LOG", "PALE_OAK_SAPLING");
+        logSaplingSection.set("CRIMSON_STEM", "CRIMSON_FUNGUS");
+        logSaplingSection.set("STRIPPED_CRIMSON_STEM", "CRIMSON_FUNGUS");
+        logSaplingSection.set("CRIMSON_HYPHAE", "CRIMSON_FUNGUS");
+        logSaplingSection.set("STRIPPED_CRIMSON_HYPHAE", "CRIMSON_FUNGUS");
+        logSaplingSection.set("WARPED_STEM", "WARPED_FUNGUS");
+        logSaplingSection.set("STRIPPED_WARPED_STEM", "WARPED_FUNGUS");
+        logSaplingSection.set("WARPED_HYPHAE", "WARPED_FUNGUS");
+        logSaplingSection.set("STRIPPED_WARPED_HYPHAE", "WARPED_FUNGUS");
 
         defaultConfig.set("enable-leaf-removal", true);
         defaultConfig.set("leaf-removal-delay-ticks", 40L);
@@ -249,8 +279,11 @@ public class Config {
         defaultConfig.set("leaf-removal-async", true);
         defaultConfig.set("leaf-removal-batch-size", 20);
         defaultConfig.set("leaf-removal-counts-towards-limit", false);
-        defaultConfig.set("leaf-types", Arrays.asList("OAK_LEAVES", "SPRUCE_LEAVES", "BIRCH_LEAVES", "JUNGLE_LEAVES",
-                "ACACIA_LEAVES", "DARK_OAK_LEAVES", "MANGROVE_LEAVES", "CHERRY_LEAVES", "PALE_OAK_LEAVES"));
+        defaultConfig.set("leaf-types", Arrays.asList(
+                "OAK_LEAVES", "SPRUCE_LEAVES", "BIRCH_LEAVES", "JUNGLE_LEAVES",
+                "ACACIA_LEAVES", "DARK_OAK_LEAVES", "MANGROVE_LEAVES", "CHERRY_LEAVES", "PALE_OAK_LEAVES",
+                "NETHER_WART_BLOCK", "WARPED_WART_BLOCK", "SHROOMLIGHT"
+        ));
         defaultConfig.set("leaf-removal-mode", "smart");
         return defaultConfig;
     }
@@ -453,9 +486,33 @@ public class Config {
     public String getLeafRemovalMode() {
         return leafRemovalMode;
     }
+
+    public boolean isNetherFungiEnabled() {
+        return netherFungiEnabled;
+    }
+
+    private static final EnumSet<Material> NETHER_FUNGI_LOGS = EnumSet.of(
+            Material.CRIMSON_STEM,
+            Material.STRIPPED_CRIMSON_STEM,
+            Material.CRIMSON_HYPHAE,
+            Material.STRIPPED_CRIMSON_HYPHAE,
+            Material.WARPED_STEM,
+            Material.STRIPPED_WARPED_STEM,
+            Material.WARPED_HYPHAE,
+            Material.STRIPPED_WARPED_HYPHAE
+    );
+
+    private static final EnumSet<Material> NETHER_FUNGI_LEAVES = EnumSet.of(
+            Material.NETHER_WART_BLOCK,
+            Material.WARPED_WART_BLOCK,
+            Material.SHROOMLIGHT
+    );
+
+    private static final EnumSet<Material> NETHER_FUNGI_SOILS = EnumSet.of(
+            Material.CRIMSON_NYLIUM,
+            Material.WARPED_NYLIUM,
+            Material.NETHERRACK
+    );
 }
-
-
-
 
 

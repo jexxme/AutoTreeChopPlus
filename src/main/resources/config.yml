@@ -76,6 +76,8 @@ stopChoppingIfNotConnected: false
 stopChoppingIfDifferentTypes: false
 
 # Define which materials can be chop
+# Toggle Nether fungus chopping (crimson & warped).
+enable-nether-fungi: true
 # You can add every leaves type or something else as you like
 # Fun fact: If you add "DIAMOND_ORE", this plugin can become an auto mining plugin, lol
 log-types:
@@ -88,6 +90,14 @@ log-types:
   - MANGROVE_LOG
   - CHERRY_LOG
   - PALE_OAK_LOG
+  - CRIMSON_STEM
+  - STRIPPED_CRIMSON_STEM
+  - CRIMSON_HYPHAE
+  - STRIPPED_CRIMSON_HYPHAE
+  - WARPED_STEM
+  - STRIPPED_WARPED_STEM
+  - WARPED_HYPHAE
+  - STRIPPED_WARPED_HYPHAE
 
 # Leaf removal setting
 enable-leaf-removal: true
@@ -119,6 +129,9 @@ leaf-types:
   - MANGROVE_LEAVES
   - CHERRY_LEAVES
   - PALE_OAK_LEAVES
+  - NETHER_WART_BLOCK
+  - WARPED_WART_BLOCK
+  - SHROOMLIGHT
 
 # Replanting setting
 # Enable automatic sapling replanting after tree chopping
@@ -142,6 +155,14 @@ log-sapling-mapping:
   MANGROVE_LOG: MANGROVE_PROPAGULE
   CHERRY_LOG: CHERRY_SAPLING
   PALE_OAK_LOG: PALE_OAK_SAPLING
+  CRIMSON_STEM: CRIMSON_FUNGUS
+  STRIPPED_CRIMSON_STEM: CRIMSON_FUNGUS
+  CRIMSON_HYPHAE: CRIMSON_FUNGUS
+  STRIPPED_CRIMSON_HYPHAE: CRIMSON_FUNGUS
+  WARPED_STEM: WARPED_FUNGUS
+  STRIPPED_WARPED_STEM: WARPED_FUNGUS
+  WARPED_HYPHAE: WARPED_FUNGUS
+  STRIPPED_WARPED_HYPHAE: WARPED_FUNGUS
 # Define valid soil types where saplings can be planted
 valid-soil-types:
   - DIRT
@@ -149,4 +170,8 @@ valid-soil-types:
   - PODZOL
   - COARSE_DIRT
   - ROOTED_DIRT
+  - CRIMSON_NYLIUM
+  - WARPED_NYLIUM
+  - NETHERRACK
+
 
